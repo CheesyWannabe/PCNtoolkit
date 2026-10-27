@@ -1,6 +1,12 @@
-from pcntoolkit import HBR, SHASHbLikelihood, BsplineBasisFunction, BLR, LinearBasisFunction
-from pcntoolkit.math_functions.prior import LinearPrior, RandomPrior, Prior
+from pcntoolkit import (
+    BLR,
+    HBR,
+    BsplineBasisFunction,
+    LinearBasisFunction,
+    SHASHbLikelihood,
+)
 from pcntoolkit.math_functions.likelihood import get_default_normal_likelihood
+from pcntoolkit.math_functions.prior import LinearPrior, Prior, RandomPrior
 
 
 def linear_BLR():
@@ -51,7 +57,7 @@ def Normal_HBR():
         cores=4,
         chains=4,
         nuts_sampler="nutpie",
-        init="jitter+adapt_diag",
+        init="auto",
         progressbar=True,
     )
     return HBR_model
@@ -109,7 +115,7 @@ def SHASHb1_HBR():
         cores=4,
         chains=4,
         nuts_sampler="nutpie",
-        init="jitter+adapt_diag",
+        init="auto",
         progressbar=True,
     )
 
@@ -183,6 +189,6 @@ def SHASHb2_HBR():
         cores=4,
         chains=4,
         nuts_sampler="nutpie",
-        init="jitter+adapt_diag",
+        init="auto",
         progressbar=True,
     )

@@ -1,0 +1,143 @@
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+from os import PathLike
+from pathlib import Path
+from typing import TYPE_CHECKING, cast
+
+import numpy as np
+import pandas as pd
+import xarray as xr
+
+# Import heavy toolkit types only during static type checking.
+if TYPE_CHECKING:
+    from pcntoolkit.dataio.norm_data import NormData
+    from pcntoolkit.normative_model import NormativeModel
+
+
+class LongitudinalScore(ABC):
+    """Abstract base class for longitudinal scores.
+
+    A longitudinal score asks whether a subject changed over time more or less
+    than a fitted normative model would expect. Concrete subclasses such as
+    ``ZDiffScore`` and ``VelocityModel`` define the exact scoring rule.
+
+    Parameters
+    ----------
+    normative_model : NormativeModel
+        A fitted normative model.
+    reference_data : NormData, optional
+        Longitudinal reference cohort, usually healthy controls, used to learn
+        how much change is typical. Only needed by scores that estimate
+        something from a cohort at scoring time, such as ``ZDiffScore``.
+    """
+
+    def __init__(
+        self,
+        normative_model: NormativeModel,
+        reference_data: NormData | None = None,
+    ) -> None:
+        self.normative_model = normative_model
+        self.reference_data = reference_data
+
+        # Fail early if the user passed an unfitted model.
+        normative_model.check_is_fitted()
+
+    @abstractmethod
+    def score(
+        self,
+        score_data: NormData,
+        save_path: str | PathLike[str] | None = None,
+    ) -> xr.DataArray:
+        """Score subjects in ``score_data``.
+
+        Parameters
+        ----------
+        score_data : NormData
+            Longitudinal cohort to score. Must include numeric visit labels
+            via ``NormData.from_dataframe(..., visits='<column>')``.
+        save_path : str | PathLike[str] | None, optional
+            If set, write scores to this CSV path in wide format: one row per
+            subject and one column per response variable.
+
+        Returns
+        -------
+        xr.DataArray
+            One longitudinal score per subject and response variable.
+        """
+
+    @staticmethod
+    def _save_scores_csv(
+        scores: xr.DataArray,
+        save_path: str | PathLike[str],
+    ) -> None:
+        """Write subject-level scores as a wide CSV (one row per subject)."""
+        path = Path(save_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        # Convert a DataArray to a wide-format DataFrame.
+        wide = cast(pd.DataFrame, scores.to_pandas()).reset_index()
+        # Save as csv
+        wide.to_csv(path, index=False)
+
+    @staticmethod
+    def _save_dataframe_csv(
+        frame: pd.DataFrame,
+        save_path: str | PathLike[str],
+    ) -> None:
+        """Write a DataFrame to CSV. Currently used for saving thrivelines."""
+        path = Path(save_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        # Save as csv
+        frame.to_csv(path, index=False)
+
+    @staticmethod
+    def _ordered_unique(values: np.ndarray) -> np.ndarray:
+        """Preserve subject order as it first appears in the data."""
+        return pd.unique(np.asarray(values))
+
+    # ------------------------------------------------------------------ #
+    # Validation functions
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _check_is_predicted(data: NormData, *, required: tuple[str, ...]) -> None:
+        """Ensure that the required prediction outputs (e.g., 'Z'. 'Yhat') are present 
+        in the data."""
+        for var in required:
+            # Stop if a required prediction output is missing.
+            if var not in data.data_vars:
+                # Tell the user to run prediction before scoring.
+                raise ValueError(
+                    f"The data is missing '{var}'. Run model.predict(data) before computing longitudinal scores."
+                )
+
+    @classmethod
+    def _check_is_longitudinal(cls, data: NormData) -> None:
+        # Read subject ids so we can count visits per person.
+        ids = data.get_subject_ids()
+        visits = data.get_visits()
+
+        # Count rows and distinct visit labels per subject
+        grouped = pd.DataFrame({"subject": ids, "visit": visits}).groupby(
+            "subject", sort=False
+        )["visit"]
+        n_rows = grouped.size()
+        n_distinct_visits = grouped.nunique()
+
+        # At least one subject must have repeated measurements.
+        if not (n_rows >= 2).any():
+            raise ValueError(
+                "The data appears to have only single-visit observations. "
+                "Longitudinal scores require multiple visits per subject. "
+                "Remove cross-sectional subjects before scoring."
+            )
+
+        # A subject with repeated rows but only one distinct visit label is
+        # invalid
+        offenders = n_distinct_visits[(n_rows >= 2) & (n_distinct_visits < 2)]
+        if len(offenders) > 0:
+            raise ValueError(
+                f"Subject {offenders.index[0]!r} has multiple rows with "
+                "identical visit labels. Longitudinal data requires distinct "
+                "visits per subject."
+            )
