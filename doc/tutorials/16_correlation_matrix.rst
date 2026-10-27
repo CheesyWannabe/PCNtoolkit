@@ -62,7 +62,7 @@ how z-scores *normally* change over time.
 
     Controls:  67
     Patients:  98
-    
+
 
 2. Fit and transfer a normative model
 -------------------------------------
@@ -113,7 +113,7 @@ LNM site.
 
     Adaptation group: 13 people, visit 1 only
     Reference group:  54 people, both visits
-    
+
 
 .. code:: ipython3
 
@@ -142,7 +142,7 @@ years apart, so we use bandwidth=3.
 
     Subjects:       54
     Observed ages:  18 to 55
-    
+
 
 4. Most of the matrix is extrapolated
 -------------------------------------
