@@ -222,7 +222,7 @@ the LNM site, which the model has never seen.
         saveresults=False,
         saveplots=False,
     )
-    fcon1000_model.fit(fcon1000);
+    fcon1000_model.fit(fcon1000)
 
 .. code:: ipython3
 
@@ -256,10 +256,10 @@ the LNM site, which the model has never seen.
 .. code:: ipython3
 
     # Adapt/transfer the fcon1000 model to the LNM site
-    lnm_model = fcon1000_model.transfer(adapt_controls);
+    lnm_model = fcon1000_model.transfer(adapt_controls)
     
     # Get a z-score for every visit of the reference controls and the patients
-    lnm_model.predict(reference_controls);
+    lnm_model.predict(reference_controls)
     lnm_model.predict(patients);
 
 3. Load the correlation matrix
@@ -315,7 +315,7 @@ scans get further apart in time.
 
 Also we see that the matrix only holds correlations for scans up to 10
 years apart and sets everything beyond that to 0. The two visits in our
-``LNM_data.csv`` are 1–3 years apart, well within that range.
+``LNM_data.csv`` are about a year apart, well within that range.
 
 4. z-diff vs z-gain
 -------------------
@@ -335,9 +335,11 @@ typically varies in healthy controls. It needs a BLR model and only two
 visits per subject.
 
 .. figure:: ../_static/zdiff.png
-   :alt: Fig. 1: z-diff score
+   :alt: Fig. 1: z-diff score for this tutorial’s data (two visits per
+   subject)
 
-   Fig. 1: z-diff score
+   Fig. 1: z-diff score for this tutorial’s data (two visits per
+   subject)
 
 Kudos to Barbora Rehák Bučková for making this figure (`Rehák Bučková et
 al., 2025 <https://doi.org/10.7554/eLife.95823>`__).
@@ -351,9 +353,11 @@ on the knowledge coming from the correlation matrix. It works with any
 model and any number of visits.
 
 .. figure:: ../_static/zgain.svg
-   :alt: Fig. 2: z-gain score and thrivelines
+   :alt: Fig. 2: Velocity model (z-gain score and thrivelines) for this
+   tutorial’s data (two visits per subject)
 
-   Fig. 2: z-gain score and thrivelines
+   Fig. 2: Velocity model (z-gain score and thrivelines) for this
+   tutorial’s data (two visits per subject)
 
 In the z-gain figure the first rows are the same as for z-diff because
 both methods require longitudinal data and a fitted normative model.
@@ -380,9 +384,9 @@ Computing the scores
 Both methods work in two steps:
 
 1. **Create the object** with what stays the same for everyone: the
-   normative model, plus the reference to compare against (z-diff: the
-   held-out controls; velocity model: the correlation matrix). Nothing
-   is computed yet.
+   normative model, plus the information that defines how much change
+   between visits is normal (z-diff: the held-out controls; velocity
+   model: the correlation matrix). Nothing is computed yet.
 2. **Call ``.score(data)``** on the people you want to score.
    ``ZDiffScore.score()`` returns z-diff; ``VelocityModel.score()``
    returns z-gain.
@@ -395,7 +399,7 @@ compute thrivelines.
     # Create the ZDiffScore object
     zdiff = ZDiffScore(lnm_model, reference_data=reference_controls)
     
-    # Compute zdiff
+    # Compute zdiff for the patients
     zdiff_patients = zdiff.score(patients)
     # Display the first few z-diff scores for the specified region
     zdiff_patients.sel(response_vars=REGION).to_series().head()
@@ -420,7 +424,7 @@ compute thrivelines.
     # Create the VelocityModel object
     velocity = VelocityModel(lnm_model, corr)
     
-    # Compute z-gain
+    # Compute z-gain for the patients
     zgain_patients = velocity.score(patients)
     # Display the first few z-gain scores for the specified region
     zgain_patients.sel(response_vars=REGION).to_series().head()

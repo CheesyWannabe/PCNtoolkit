@@ -127,8 +127,8 @@ LNM site.
 ---------------------------------
 
 ``bandwidth`` is the widest age gap, in years, that gets a correlation;
-wider gaps are set to 0. Our visits are at most 3 years apart, so we use
-bandwidth=3.
+wider gaps are set to 0. If we look at our data our visits are at most 3
+years apart, so we use bandwidth=3.
 
 .. code:: ipython3
 
