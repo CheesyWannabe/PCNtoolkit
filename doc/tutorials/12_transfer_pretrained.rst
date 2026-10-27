@@ -33,9 +33,6 @@ Install requests manually as it is not install with
     Requirement already satisfied: idna<4,>=2.5 in /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages (from requests) (3.20)
     Requirement already satisfied: urllib3<3,>=1.26 in /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages (from requests) (2.8.0)
     Requirement already satisfied: certifi>=2023.5.7 in /opt/hostedtoolcache/Python/3.13.16/x64/lib/python3.13/site-packages (from requests) (2026.10.23)
-    
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m A new release of pip is available: [0m[31;49m26.2.1[0m[39;49m -> [0m[32;49m26.2.2[0m
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
 
 
 .. code:: ipython3
