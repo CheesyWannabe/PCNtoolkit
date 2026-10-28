@@ -29,11 +29,11 @@ What you need
 What you will learn
 -------------------
 
--  what a longitudinal dataset and a correlation matrix look like,
--  how to compute **z-diff** and **z-gain (velocity model)**, and
-   whether they agree,
--  when to use which score,
--  how to plot **thrivelines** on normative centiles.
+- what a longitudinal dataset and a correlation matrix look like,
+- how to compute **z-diff** and **z-gain (velocity model)**, and whether
+  they agree,
+- when to use which score,
+- how to plot **thrivelines** on normative centiles.
 
 .. code:: ipython3
 
@@ -186,7 +186,7 @@ scanned twice about a year apart (`Rehák Bučková et al.,
     Visits per subject:   2
     Age range:            18 to 55 years
     Brain regions:        185
-
+    
 
 Now load controls and patients separately. We keep one region because
 the example correlation matrix covers only that one.
@@ -251,7 +251,7 @@ the LNM site, which the model has never seen.
 
     Adaptation group: 13 people, visit 1 only
     Reference group:  54 people, both visits
-
+    
 
 .. code:: ipython3
 
@@ -334,15 +334,16 @@ expected based on healthy ageing, divided by how much this change
 typically varies in healthy controls. It needs a BLR model and only two
 visits per subject.
 
+In the diagram below you see the z-diff score for our tutorial’s data
+(two visits per subject):
+
 .. figure:: ../_static/zdiff.png
-   :alt: Fig. 1: z-diff score for this tutorial’s data (two visits per
-   subject)
+   :alt: Fig. 1: z-diff score
 
-   Fig. 1: z-diff score for this tutorial’s data (two visits per
-   subject)
+   Fig. 1: z-diff score
 
-Kudos to Barbora Rehák Bučková for making this figure (`Rehák Bučková et
-al., 2025 <https://doi.org/10.7554/eLife.95823>`__).
+Kudos to Barbora Rehák Bučková for making this beautiful figure (`Rehák
+Bučková et al., 2025 <https://doi.org/10.7554/eLife.95823>`__).
 
 z-gain
 ~~~~~~
@@ -352,12 +353,13 @@ asks whether the later z-score is surprising given the earlier one based
 on the knowledge coming from the correlation matrix. It works with any
 model and any number of visits.
 
-.. figure:: ../_static/zgain.svg
-   :alt: Fig. 2: Velocity model (z-gain score and thrivelines) for this
-   tutorial’s data (two visits per subject)
+In the diagram below you see the velocity model (z-gain score and
+thrivelines) for our tutorial’s data (two visits per subject):
 
-   Fig. 2: Velocity model (z-gain score and thrivelines) for this
-   tutorial’s data (two visits per subject)
+.. figure:: ../_static/zgain.svg
+   :alt: Fig. 2: Velocity model
+
+   Fig. 2: Velocity model
 
 In the z-gain figure the first rows are the same as for z-diff because
 both methods require longitudinal data and a fitted normative model.
@@ -580,7 +582,7 @@ we call a score *extreme* when it is beyond ±1.96 (dashed lines).
 .. code:: text
 
     Spearman correlation: 0.90
-
+    
 
 
 
@@ -646,8 +648,8 @@ blue line starts on a centile and runs one year forward. It shows the
 largest change (here: decline) a person starting there can have while
 still changing as expected:
 
--  **staying on or above a thriveline**: normal change,
--  **dropping below it**: unusually large decline (z-gain below −1.96).
+- **staying on or above a thriveline**: normal change,
+- **dropping below it**: unusually large decline (z-gain below −1.96).
 
 Below we draw the patient with the most negative z-gain (red) and the
 control with the most typical change (blue).
